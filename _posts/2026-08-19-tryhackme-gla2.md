@@ -41,7 +41,6 @@ curl http://gla2.thm/health
 {"ok":true}
 ```
 
-![health check](/assets/img/gla2/02-health.png)
 
 ## Digging Into the Game Client
 
@@ -62,7 +61,6 @@ strings GrandLarcenyAuto.x86_64 | grep -i godot
 
 → **Godot Engine v4.7.1.stable.mono.official**
 
-![godot version](/assets/img/gla2/03-godot-version.png)
 
 ## Extracting and Decompiling the Game
 
@@ -77,7 +75,6 @@ This pulled out 8 decompiled C# scripts, including two that mattered:
 - `SafehouseVault.cs` — the in-game vault
 - `PoPClient.cs` — the game's network/API client
 
-![gdre extraction output](/assets/img/gla2/04-gdre-extract.png)
 
 ## The First Flag (a Decoy)
 
@@ -86,7 +83,6 @@ This pulled out 8 decompiled C# scripts, including two that mattered:
 THM{th3_v4ult_w4s_4_d3c0y}
 
 
-![decoy flag in source](/assets/img/gla2/05-decoy-flag.png)
 
 ## Finding the Real Protocol
 
@@ -98,13 +94,11 @@ THM{th3_v4ult_w4s_4_d3c0y}
 
 A method called `DeriveStaffRole()` stood out — it builds a string from the stash order and SHA-1 hashes it, clearly meant to be used as a hidden `role` value instead of `"player"`.
 
-![PoPClient.cs source](/assets/img/gla2/06-popclient-source.png)
 
 ## Writing a Script to Replay the Protocol
 
 Instead of playing the game and hoping the traffic lined up, wrote a Python script to talk to the API directly, replicating the exact request sequence and HMAC signing scheme found in the decompiled source.
 
-![solve.py script](/assets/img/gla2/07-solve-script.png)
 
 ## Debugging — Hint #1: Too Fast
 
@@ -116,7 +110,6 @@ HTTP 425 error body: {"error":"too_fast","need":6,"got":0.27}
 
 The server enforces a minimum delay between steps to simulate real gameplay pacing. Fixed by adding `time.sleep(7)` between each request.
 
-![too fast error](/assets/img/gla2/08-too-fast-error.png)
 
 ## Debugging — Hint #2: Bad Token
 
@@ -127,7 +120,6 @@ HTTP 401 error body: {"error":"bad_token"}
 
 Turned out each checkpoint response returns a **new rotating token** that must be used in the next request — the script was still using the original token from `/session`. Fixed by updating the token after every response.
 
-![bad token error](/assets/img/gla2/09-bad-token-error.png)
 
 ## Getting the Real Flag
 
@@ -136,7 +128,6 @@ With both issues fixed, the script ran the full sequence cleanly and submitted t
 - `role: "player"` → `THM{n1c3_dr1v1ng_but_th4ts_th3_wr0ng_v4ult}` (note: *"civilian access — the real vault is staff-only"*)
 - `role: <SHA-1 staff hash>` → **`THM{Th4ts_th3_wr0ng_g4m3_t0mmy}`**
 
-![final flag output](/assets/img/gla2/10-final-flag.png)
 
 ## Takeaway
 

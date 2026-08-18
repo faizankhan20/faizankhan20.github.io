@@ -127,7 +127,7 @@ Turned out each checkpoint response returns a **new rotating token** that must b
 With both issues fixed, the script ran the full sequence cleanly and submitted two claims:
 
 - `role: "player"` → `THM{n1c3_dr1v1ng_but_th4ts_th3_wr0ng_v4ult}` (note: *"civilian access — the real vault is staff-only"*)
-- `role: <SHA-1 staff hash>` → **`THM{Th4ts_th3_wr0ng_g4m3_t0mmy}`**
+- `role: <SHA-1 staff hash>` → **`THM{Th4ts_REDACTED_mmy}`**
 
 
 ## Takeaway

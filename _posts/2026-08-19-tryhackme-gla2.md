@@ -1,6 +1,6 @@
 ---
 title: "TryHackMe: GLA II — Robbing the Real Vault"
-date: 2026-08-19 12:00:00 +0500
+date: 2026-08-18 12:00:00 +0500
 categories: [CTF, TryHackMe]
 tags: [reverse-engineering, godot, api, ctf-writeup]
 ---
